@@ -3,13 +3,56 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 // just for demo
 let refreshTokens = [];
+let users = [];
 
-app.post("/token", (req, res) => {
+app.get("/auth", (req, res) => {
+  res.json({ body: "hohoho" });
+});
+
+app.post("/auth/login", async (req, res) => {
+  const user = users.find((user) => (user.username = req.body.username));
+  console.log(req.body);
+  if (user == null) {
+    return res.status(400).send("Wrong user or password");
+  }
+
+  try {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      const accessToken = generateAccessToken({ name: req.body.username });
+      const refreshToken = jwt.sign({ name: req.body.username }, process.env.REFRESH_TOKEN_SECRET);
+      refreshTokens.push(refreshToken);
+      res.json({ accessToken: accessToken, refreshToken: refreshToken });
+    } else {
+      res.send("Wrong user or password");
+    }
+  } catch {
+    res.status(500).send();
+  }
+});
+
+app.post("/auth/register", async (req, res) => {
+  try {
+    hashedPassword = await bcrypt.hash(req.body.password, 12);
+    users.push({
+      id: Date.now().toString(),
+      username: req.body.username,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+    res.status(200).send();
+  } catch {
+    res.status(500).send();
+  }
+  console.log(users);
+});
+
+app.post("/auth/token", (req, res) => {
   const refreshToken = req.body.token;
   if (refreshToken == null) return res.sendStatus(401);
   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
@@ -20,20 +63,9 @@ app.post("/token", (req, res) => {
   });
 });
 
-app.delete("/logout", (req, res) => {
+app.delete("/auth/logout", (req, res) => {
   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
   res.sendStatus(204);
-});
-
-app.post("/login", (req, res) => {
-  // Authenticate User
-
-  const username = req.body.username;
-  const user = { name: username };
-  const accessToken = generateAccessToken(user);
-  const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-  refreshTokens.push(refreshToken);
-  res.json({ accessToken: accessToken, refreshToken: refreshToken });
 });
 
 function generateAccessToken(user) {

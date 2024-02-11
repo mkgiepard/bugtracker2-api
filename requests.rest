@@ -25,3 +25,40 @@ Content-Type: application/json
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQnJvcyIsImlhdCI6MTcwNjY0MjMxNn0.dDzUcrlHHgGde_19t8WdclqTuTzGxtW9m8UBFN8wtU4"
 }
+
+###
+
+GET http://localhost:3000/users
+
+
+###
+
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name" : "Mario",
+    "password": "password"
+}
+
+
+###
+
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "name" : "Mario",
+    "password": "password"
+}
+
+###
+
+POST http://localhost:4000/auth/register
+Content-Type: application/json
+
+{
+   "name": "Mario",
+   "email": "bross@mario.co",
+   "password": "something"
+}
