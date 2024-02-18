@@ -8,6 +8,8 @@ const passport = require("passport");
 
 // just for demo
 let refreshTokens = [];
+
+// move this to a single file and use for testing
 let users = [
   {
     id: "1708258641158",
@@ -30,7 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.get("/app/settings", passport.authenticate("jwt", { session: false }), (req, res) => {
-  res.json({ msg: "SUCCESS: protected /settings route" });
+  res.json({ msg: "SUCCESS: protected /settings route (4000)" });
 });
 
 app.post("/auth/login", async (req, res, next) => {

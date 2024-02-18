@@ -1,10 +1,30 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
+// move this to a single file and use for testing
+let users = [
+  {
+    id: "1708258641158",
+    username: "Mario",
+    email: "one@one.co",
+    password: process.env.TEST_USER_SECRET,
+  },
+];
+
+require("./config/passport")(passport, (username) =>
+  users.find((user) => (user.username = username))
+);
+
+app.use(passport.initialize());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors());
 
 const posts = [
   {
@@ -19,6 +39,10 @@ const posts = [
 
 app.get("/posts", authenticateToken, (req, res) => {
   res.json(posts.filter((post) => post.username === req.user.name));
+});
+
+app.get("/app/settings", passport.authenticate("jwt", { session: false }), (req, res) => {
+  res.json({ msg: "SUCCESS: protected /settings route (3000)" });
 });
 
 // Middleware for token authentication
