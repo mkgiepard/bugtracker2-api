@@ -1,22 +1,32 @@
 require("dotenv").config();
 
 const express = require("express");
-const app = express();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-
-app.use(express.json());
+const passport = require("passport");
 
 // just for demo
 let refreshTokens = [];
 let users = [];
 
-app.get("/auth", (req, res) => {
+const app = express();
+
+require("./config/passport")(passport, (username) =>
+  users.find((user) => (user.username = username))
+);
+
+app.use(passport.initialize());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/auth", passport.authenticate("jwt", { session: false }), (req, res) => {
+  console.log("auth:");
   res.json({ body: "hohoho" });
 });
 
-app.post("/auth/login", async (req, res) => {
+app.post("/auth/login", async (req, res, next) => {
   const user = users.find((user) => (user.username = req.body.username));
+  console.log("login:");
   console.log(req.body);
   if (user == null) {
     return res.status(400).send("Wrong user or password");
@@ -24,8 +34,11 @@ app.post("/auth/login", async (req, res) => {
 
   try {
     if (await bcrypt.compare(req.body.password, user.password)) {
-      const accessToken = generateAccessToken({ name: req.body.username });
-      const refreshToken = jwt.sign({ name: req.body.username }, process.env.REFRESH_TOKEN_SECRET);
+      const accessToken = generateAccessToken({ username: req.body.username });
+      const refreshToken = jwt.sign(
+        { username: req.body.username },
+        process.env.REFRESH_TOKEN_SECRET
+      );
       refreshTokens.push(refreshToken);
       res.json({ accessToken: accessToken, refreshToken: refreshToken });
     } else {
@@ -38,6 +51,7 @@ app.post("/auth/login", async (req, res) => {
 
 app.post("/auth/register", async (req, res) => {
   try {
+    console.log("register");
     hashedPassword = await bcrypt.hash(req.body.password, 12);
     users.push({
       id: Date.now().toString(),
@@ -58,18 +72,18 @@ app.post("/auth/token", (req, res) => {
   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
-    const accessToken = generateAccessToken({ name: user.name });
+    const accessToken = generateAccessToken({ username: user.name });
     res.json({ accessToken: accessToken });
   });
 });
 
-app.delete("/auth/logout", (req, res) => {
+app.delete("/auth/logout", passport.authenticate("jwt", { session: false }), (req, res, next) => {
   refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
   res.sendStatus(204);
 });
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30s" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "300s" });
 }
 
 app.listen(4000);
