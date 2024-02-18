@@ -1,13 +1,21 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 
 // just for demo
 let refreshTokens = [];
-let users = [];
+let users = [
+  {
+    id: "1708258641158",
+    username: "Mario",
+    email: "one@one.co",
+    password: process.env.TEST_USER_SECRET,
+  },
+];
 
 const app = express();
 
@@ -19,9 +27,10 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/auth", passport.authenticate("jwt", { session: false }), (req, res) => {
-  console.log("auth:");
-  res.json({ body: "hohoho" });
+app.use(cors());
+
+app.get("/app/settings", passport.authenticate("jwt", { session: false }), (req, res) => {
+  res.json({ msg: "SUCCESS: protected /settings route" });
 });
 
 app.post("/auth/login", async (req, res, next) => {

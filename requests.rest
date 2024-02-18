@@ -58,7 +58,7 @@ POST http://localhost:4000/auth/register
 Content-Type: application/json
 
 {
-   "username": "Mario",
+   "username": "Mario2",
    "email": "bross@mario.co",
    "password": "something"
 }
@@ -69,7 +69,7 @@ POST http://localhost:4000/auth/login
 Content-Type: application/json
 
 {
-   "username": "Mario",
+   "username": "Mario2",
    "password": "something"
 }
 
