@@ -6,6 +6,24 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 
+const mongoose = require("mongoose");
+
+main().catch((err) => console.log(err));
+
+async function main() {
+  await mongoose.connect("mongodb://127.0.0.1:27017/usersdb");
+}
+
+const UserSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String,
+});
+
+mongoose.model("User", UserSchema);
+
+const User = mongoose.model("User");
+
 // just for demo
 let refreshTokens = [];
 
@@ -21,9 +39,7 @@ let users = [
 
 const app = express();
 
-require("./config/passport")(passport, (username) =>
-  users.find((user) => user.username === username)
-);
+require("./config/passport")(passport, (username) => User.findOne({ username: username }));
 
 app.use(passport.initialize());
 app.use(express.json());
@@ -35,39 +51,78 @@ app.get("/app/settings", passport.authenticate("jwt", { session: false }), (req,
   res.json({ msg: "SUCCESS: protected /settings route (3000)" });
 });
 
-app.post("/auth/login", async (req, res, next) => {
-  const user = users.find((user) => user.username === req.body.username);
-  if (user == null) {
-    return res.status(400).send("Wrong user or password");
-  }
-
-  try {
-    if (await bcrypt.compare(req.body.password, user.password)) {
-      const accessToken = generateAccessToken({ username: req.body.username });
-      const refreshToken = jwt.sign(
-        { username: req.body.username },
-        process.env.REFRESH_TOKEN_SECRET
-      );
-      refreshTokens.push(refreshToken);
-      res.json({ accessToken: accessToken, refreshToken: refreshToken });
-    } else {
-      res.send("Wrong user or password");
-    }
-  } catch {
-    res.status(500).send();
-  }
+app.post("/auth/login", (req, res, next) => {
+  User.findOne({ username: req.body.username })
+    .then(async (user) => {
+      console.log(user);
+      if (!user) {
+        return res.status(401).send("Wrong user or password");
+      }
+      try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+          const accessToken = generateAccessToken({ username: req.body.username });
+          const refreshToken = jwt.sign(
+            { username: req.body.username },
+            process.env.REFRESH_TOKEN_SECRET
+          );
+          refreshTokens.push(refreshToken);
+          res.json({ accessToken: accessToken, refreshToken: refreshToken });
+        } else {
+          res.send("Wrong user or password");
+        }
+      } catch {
+        res.status(500).send();
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
+
+// app.post("/auth/login", async (req, res, next) => {
+//   const user = users.find((user) => user.username === req.body.username);
+//   if (user == null) {
+//     return res.status(400).send("Wrong user or password");
+//   }
+
+//   try {
+//     if (await bcrypt.compare(req.body.password, user.password)) {
+//       const accessToken = generateAccessToken({ username: req.body.username });
+//       const refreshToken = jwt.sign(
+//         { username: req.body.username },
+//         process.env.REFRESH_TOKEN_SECRET
+//       );
+//       refreshTokens.push(refreshToken);
+//       res.json({ accessToken: accessToken, refreshToken: refreshToken });
+//     } else {
+//       res.send("Wrong user or password");
+//     }
+//   } catch {
+//     res.status(500).send();
+//   }
+// });
 
 app.post("/auth/register", async (req, res) => {
   try {
     hashedPassword = await bcrypt.hash(req.body.password, 12);
-    users.push({
+
+    const newUser = new User({
       id: Date.now().toString(),
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
     });
-    res.status(200).send();
+
+    newUser.save().then((user) => {
+      res.status(200).send();
+    });
+    // users.push({
+    //   id: Date.now().toString(),
+    //   username: req.body.username,
+    //   email: req.body.email,
+    //   password: hashedPassword,
+    // });
+    // res.status(200).send();
   } catch {
     res.status(500).send();
   }

@@ -27,7 +27,7 @@ Content-Type: application/json
 }
 
 ###
-
+  
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -37,14 +37,24 @@ Content-Type: application/json
 }
 
 ###
+  
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "username" : "bros",
+    "password": "one"
+}
+
+###
 
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-   "username": "bross",
-   "email": "bross@one.co",
-   "password": "something"
+   "username": "bros",
+   "email": "bros@one.co",
+   "password": "one"
 }
 
 ###
