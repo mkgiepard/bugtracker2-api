@@ -17,7 +17,7 @@ let users = [
 ];
 
 require("./config/passport")(passport, (username) =>
-  users.find((user) => (user.username = username))
+  users.find((user) => user.username === username)
 );
 
 app.use(passport.initialize());

@@ -36,7 +36,7 @@ app.get("/app/settings", passport.authenticate("jwt", { session: false }), (req,
 });
 
 app.post("/auth/login", async (req, res, next) => {
-  const user = users.find((user) => (user.username = req.body.username));
+  const user = users.find((user) => user.username === req.body.username);
   console.log("login:");
   console.log(req.body);
   if (user == null) {
