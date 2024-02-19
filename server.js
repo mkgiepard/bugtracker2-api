@@ -69,29 +69,6 @@ app.post("/auth/login", (req, res, next) => {
     });
 });
 
-// app.post("/auth/login", async (req, res, next) => {
-//   const user = users.find((user) => user.username === req.body.username);
-//   if (user == null) {
-//     return res.status(400).send("Wrong user or password");
-//   }
-
-//   try {
-//     if (await bcrypt.compare(req.body.password, user.password)) {
-//       const accessToken = generateAccessToken({ username: req.body.username });
-//       const refreshToken = jwt.sign(
-//         { username: req.body.username },
-//         process.env.REFRESH_TOKEN_SECRET
-//       );
-//       refreshTokens.push(refreshToken);
-//       res.json({ accessToken: accessToken, refreshToken: refreshToken });
-//     } else {
-//       res.send("Wrong user or password");
-//     }
-//   } catch {
-//     res.status(500).send();
-//   }
-// });
-
 app.post("/auth/register", async (req, res) => {
   try {
     hashedPassword = await bcrypt.hash(req.body.password, 12);
@@ -106,13 +83,6 @@ app.post("/auth/register", async (req, res) => {
     newUser.save().then((user) => {
       res.status(200).send();
     });
-    // users.push({
-    //   id: Date.now().toString(),
-    //   username: req.body.username,
-    //   email: req.body.email,
-    //   password: hashedPassword,
-    // });
-    // res.status(200).send();
   } catch {
     res.status(500).send();
   }
