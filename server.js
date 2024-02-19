@@ -27,16 +27,6 @@ const User = mongoose.model("User");
 // just for demo
 let refreshTokens = [];
 
-// move this to a MongoDB
-let users = [
-  {
-    id: "1708350717582",
-    username: "Mario",
-    email: "one2@one.co",
-    password: process.env.TEST_USER_SECRET,
-  },
-];
-
 const app = express();
 
 require("./config/passport")(passport, (username) => User.findOne({ username: username }));
