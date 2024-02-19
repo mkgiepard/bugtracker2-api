@@ -5,23 +5,11 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
-
 const mongoose = require("mongoose");
 
-main().catch((err) => console.log(err));
+require("./config/database");
 
-async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/usersdb");
-}
-
-const UserSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-});
-
-mongoose.model("User", UserSchema);
-
+require("./model/user");
 const User = mongoose.model("User");
 
 // just for demo
