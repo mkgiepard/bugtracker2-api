@@ -71,7 +71,6 @@ app.post("/auth/register", async (req, res) => {
   } catch {
     res.status(500).send();
   }
-  console.log(users);
 });
 
 app.post("/auth/token", (req, res) => {
