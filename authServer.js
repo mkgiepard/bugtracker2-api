@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+// PARKING FOR THE MOMENT, NOT USED BY FE UNTIL DB IS ADDED
+
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
