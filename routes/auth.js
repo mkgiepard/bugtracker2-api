@@ -26,7 +26,7 @@ router.post("/login", (req, res, next) => {
           refreshTokens.push(refreshToken);
           res.json({ accessToken: accessToken, refreshToken: refreshToken });
         } else {
-          res.send("Wrong user or password");
+          res.status(401).json({ error: "Wrong user or password" });
         }
       } catch {
         res.status(500).send();
