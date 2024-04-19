@@ -49,7 +49,8 @@ router.post("/register", async (req, res) => {
     });
 
     newUser.save().then((user) => {
-      res.status(200).send();
+      const success = "User '" + user.username + "' successfully registered!";
+      res.status(200).json({msg: success});
     });
   } catch {
     res.status(500).send();
