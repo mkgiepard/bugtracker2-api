@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "devStart": "nodemon server.js --ignore '*/*.test.js'",
+    "devStart": "NODE_ENV=dev PORT=3000 nodemon server.js --ignore '*/*.test.js'",
+    "testStart": "NODE_ENV=test PORT=3001 nodemon server.js --ignore '*/*.test.js'",
     "test": "node --test --watch"
   },
   "keywords": [],
@@ -14,6 +15,7 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
+    "dotenv-expand": "^11.0.6",
     "express": "^4.18.2",
     "express-flash": "^0.0.2",
     "express-session": "^1.18.0",
