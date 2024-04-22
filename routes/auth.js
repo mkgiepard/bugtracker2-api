@@ -14,7 +14,7 @@ router.post("/login", (req, res, next) => {
     .then(async (user) => {
       console.log(user);
       if (!user) {
-        return res.status(401).send("Wrong user or password");
+        return res.status(401).send({ error: "Wrong user or password" });
       }
       try {
         if (await bcrypt.compare(req.body.password, user.password)) {
