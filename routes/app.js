@@ -27,13 +27,35 @@ router.get("/users/:username", (req, res) => {
     .select(["-password", "-__v"])
     .then(async (user) => {
       if (!user) {
-        return res.status(404).send();
+        return res.status(404).send({ error: "User doesn't exist!" });
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
       next(err);
     });
+});
+
+router.put("/users/:username", async (req, res) => {
+	User.findOne({ username: req.params.username })
+    .then(async (user) => {
+      if (!user) {
+        return res.status(404).send({ error: "User doesn't exist!" });
+      }
+      if (req.body.username) {
+        user.username = req.body.username
+      }
+  
+      if (req.body.email) {
+        user.email = req.body.email
+      }
+  
+      user.save().then((user) => {
+        const success = "User '" + user.username + "' successfully updated!";
+        res.status(200).json({msg: success});
+      })
+    })
+    .catch((err) => {next(err)});
 });
 
 module.exports = router;

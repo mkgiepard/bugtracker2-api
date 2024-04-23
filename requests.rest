@@ -105,3 +105,14 @@ GET http://localhost:3000/app/users/Mario
 ###
  
 GET http://localhost:3000/app/users/not-found
+
+### 
+ 
+PUT http://localhost:3000/app/users/bros
+Content-Type: application/json
+
+{
+   "email": "mario3@softtest.dev"
+
+}
+
