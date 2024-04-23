@@ -58,4 +58,19 @@ router.put("/users/:username", async (req, res) => {
     .catch((err) => {next(err)});
 });
 
+router.delete("/users/:username", (req, res) => {
+  User.deleteOne({username: req.params.username})
+    .then((result) => {
+      if (result.deletedCount == 1) {
+        const success = "User '" + req.params.username + "' successfully deleted!";
+        return res.status(200).send({msg: success});
+      } else {
+        return res.status(404).send({ error: "User doesn't exist!" });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports = router;
