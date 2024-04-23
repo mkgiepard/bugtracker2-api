@@ -91,3 +91,17 @@ GET http://localhost:3000/app/settings
 ###
 
 GET http://localhost:3000/app/testing
+
+
+###
+
+GET http://localhost:3000/app/users
+
+
+###
+ 
+GET http://localhost:3000/app/users/Mario
+
+###
+ 
+GET http://localhost:3000/app/users/not-found
