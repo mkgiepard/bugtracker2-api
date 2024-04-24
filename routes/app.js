@@ -11,7 +11,7 @@ router.get("/testing", (req, res) => {
   res.json({ msg: "SUCCESS: not protected /testing route (3000)" });
 });
 
-router.get("/users", (req, res) => {
+router.get("/users", passport.authenticate("jwt", { session: false }), (req, res) => {
   User.find({})
     .select(["-password", "-__v"])
     .then(async (users) => {
