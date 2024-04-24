@@ -22,7 +22,7 @@ router.get("/users", passport.authenticate("jwt", { session: false }), (req, res
     });
 });
 
-router.get("/users/:username", (req, res) => {
+router.get("/users/:username", passport.authenticate("jwt", { session: false }), (req, res) => {
   User.findOne({username: req.params.username})
     .select(["-password", "-__v"])
     .then(async (user) => {
@@ -36,7 +36,7 @@ router.get("/users/:username", (req, res) => {
     });
 });
 
-router.put("/users/:username", async (req, res) => {
+router.put("/users/:username", passport.authenticate("jwt", { session: false }), async (req, res) => {
 	User.findOne({ username: req.params.username })
     .then(async (user) => {
       if (!user) {
@@ -58,7 +58,7 @@ router.put("/users/:username", async (req, res) => {
     .catch((err) => {next(err)});
 });
 
-router.delete("/users/:username", (req, res) => {
+router.delete("/users/:username", passport.authenticate("jwt", { session: false }), (req, res) => {
   User.deleteOne({username: req.params.username})
     .then((result) => {
       if (result.deletedCount == 1) {
