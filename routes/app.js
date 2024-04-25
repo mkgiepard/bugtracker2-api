@@ -37,19 +37,23 @@ router.get("/users/:username", passport.authenticate("jwt", { session: false }),
 });
 
 router.put("/users/:username", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  console.log(req.body);
 	User.findOne({ username: req.params.username })
     .then(async (user) => {
       if (!user) {
         return res.status(404).send({ error: "User doesn't exist!" });
       }
-      if (req.body.username) {
-        user.username = req.body.username
-      }
   
       if (req.body.email) {
         user.email = req.body.email
       }
-  
+      if (req.body.firstName) {
+        user.firstName = req.body.firstName
+      }
+      if (req.body.lastName) {
+        user.lastName = req.body.lastName
+      }
+
       user.save().then((user) => {
         const success = "User '" + user.username + "' successfully updated!";
         res.status(200).json({msg: success});
