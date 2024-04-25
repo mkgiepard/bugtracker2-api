@@ -1,13 +1,17 @@
+const dotenv = require('dotenv');
+const dotenvExpand = require('dotenv-expand');
+dotenvExpand.expand(dotenv.config());
+
 const { describe, it, before, after } = require("node:test");
 const { assert, strictEqual, deepStrictEqual } = require("node:assert");
 
 describe("POST /auth/login", () => {
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "http://localhost:3001";
 
   it("should return 200 and { accessToken, refreshToken } on a successful login", async () => {
     const data = {
-      username: "Mario",
-      password: "one",
+      username: "mario",
+      password: process.env.DEFAULT_PWD,
     };
     const response = await fetch(`${BASE_URL}/auth/login`, {
       method: "POST",
