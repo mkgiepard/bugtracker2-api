@@ -47,13 +47,21 @@ router.post("/register", async (req, res) => {
       email: req.body.email,
       password: hashedPassword,
     });
-
-    newUser.save().then((user) => {
-      const success = "User '" + user.username + "' successfully registered!";
-      res.status(200).json({msg: success});
-    });
-  } catch {
-    res.status(500).send();
+    newUser
+      .save()
+      .then((user) => {
+        const success = "User '" + user.username + "' successfully registered!";
+        res.status(200).json({ msg: success });
+      })
+      .catch((err) => {
+        if (err.name === "MongoServerError" && err.code === 11000) {
+          res.status(409).send({ error: "User with this username already exists!" });
+        } else {
+          res.status(500).send(err.name + ": " + err.code);
+        }
+      });
+  } catch (err) {
+    res.status(500).send(err.name + ": " + err.code);
   }
 });
 
