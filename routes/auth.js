@@ -53,7 +53,7 @@ router.post("/register", async (req, res) => {
     }
 
     if (req.body.lastName) {
-      newUserData.lastName = req.body.firstName;
+      newUserData.lastName = req.body.lastName;
     }
 
     const newUser = new User(newUserData);
