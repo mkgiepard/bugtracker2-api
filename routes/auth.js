@@ -41,12 +41,22 @@ router.post("/register", async (req, res) => {
   try {
     hashedPassword = await bcrypt.hash(req.body.password, 12);
 
-    const newUser = new User({
+    const newUserData = {
       id: Date.now().toString(),
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-    });
+    };
+
+    if (req.body.firstName) {
+      newUserData.firstName = req.body.firstName;
+    }
+
+    if (req.body.lastName) {
+      newUserData.lastName = req.body.firstName;
+    }
+
+    const newUser = new User(newUserData);
     newUser
       .save()
       .then((user) => {
