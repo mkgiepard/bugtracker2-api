@@ -119,3 +119,24 @@ Content-Type: application/json
 ###
  
 DELETE http://localhost:3000/app/users/Mario
+
+###
+ 
+GET http://localhost:3000/app/bugreports
+
+###
+
+POST http://localhost:3000/app/bugreport
+Content-Type: application/json
+
+  {
+    "id": 1004,
+    "title": "bug report 4",
+    "priority": 0,
+    "status": "New",
+    "description": "lorem epsum...",
+    "author": "jbravo",
+    "created": "2024-02-13T14:26:11.000+00:00",
+    "updated": "2024-05-14T11:11:12.000+00:00"
+  }
+

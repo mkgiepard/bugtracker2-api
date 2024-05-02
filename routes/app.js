@@ -2,6 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
+const BugReport = mongoose.model("BugReport");
 
 router.get("/settings", passport.authenticate("jwt", { session: false }), (req, res) => {
   res.json({ msg: "SUCCESS: protected /settings route (3000)" });
@@ -10,6 +11,50 @@ router.get("/settings", passport.authenticate("jwt", { session: false }), (req, 
 router.get("/testing", (req, res) => {
   res.json({ msg: "SUCCESS: not protected /testing route (3000)" });
 });
+
+router.get("/bugReports", (req, res) => {
+  BugReport.find({})
+    .then(async (bugReports) => {
+      return res.status(200).send(bugReports);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+router.post("/bugReport", (req, res) => {
+  try {
+    const newBugReport =  new BugReport({
+      id: req.body.id,
+      title: req.body.title,
+      priority: req.body.priority,
+      status: req.body.status,
+      description: req.body.description,
+      author: req.body.author,
+      created: req.body.created,
+      updated: req.body.updated,
+    });
+
+    console.log(req.body);
+    console.log(newBugReport);
+
+    newBugReport
+      .save()
+      .then((bugReport) => {
+        const success = "BugReport '" + bugReport.id + "' successfully registered!";
+        res.status(200).json({ msg: success });
+      })
+      .catch((err) => {
+        if (err.name === "MongoServerError" && err.code === 11000) {
+          res.status(409).send({ error: "User with this username already exists!" });
+        } else {
+          res.status(500).send(err.name + ": " + err.code);
+        }
+      });
+  } catch (err) {
+    res.status(500).send(err.name + ": " + err.code);
+  }
+})
 
 router.get("/users", passport.authenticate("jwt", { session: false }), (req, res) => {
   User.find({})

@@ -13,7 +13,9 @@ const app = express();
 // MongoDB connection and models
 require("./config/database");
 require("./model/user");
+require("./model/bugReport");
 const User = mongoose.model("User");
+const BugReport = mongoose.model("BugReport");
 
 // Passport configuration and init
 require("./config/passport")(passport, (username) => User.findOne({ username: username }));
