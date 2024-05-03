@@ -126,13 +126,13 @@ GET http://localhost:3000/app/bugreports
 
 ###
 
-POST http://localhost:3000/app/bugreport
+POST http://localhost:3000/app/bugreports
 Content-Type: application/json
 
   {
-    "id": 1004,
-    "title": "bug report 4",
-    "priority": 0,
+    "id": 1005,
+    "title": "bug report 5",
+    "priority": 3,
     "status": "New",
     "description": "lorem epsum...",
     "author": "jbravo",
@@ -142,16 +142,20 @@ Content-Type: application/json
 
 ###
  
-GET http://localhost:3000/app/bugreports/1001
+GET http://localhost:3000/app/bugreports/1005
 
 ###
 
-PUT http://localhost:3000/app/bugreports/1001
+PUT http://localhost:3000/app/bugreports/1005
 Content-Type: application/json
 
   {
-    "title": "bug report 1 updated",
-    "priority": 1,
+    "title": "bug report 5 updated",
+    "priority": 2,
     "status": "Fixed",
     "description": "lorem epsum... updated"
   }
+
+###
+ 
+DELETE http://localhost:3000/app/bugreports/1002
