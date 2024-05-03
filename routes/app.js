@@ -22,7 +22,7 @@ router.get("/bugreports", (req, res) => {
     });
 });
 
-router.get("/bugreport/:id", (req, res) => {
+router.get("/bugreports/:id", (req, res) => {
   BugReport.findOne({id: req.params.id})
     .then(async (bugReport) => {
       if (!bugReport) {
@@ -34,6 +34,37 @@ router.get("/bugreport/:id", (req, res) => {
       next(err);
     });
 });
+
+router.put("/bugreports/:id", (req, res) => {
+  console.log(req);
+  BugReport.findOne({id: req.params.id})
+    .then(async (bugReport) => {
+      if (!bugReport) {
+        return res.status(404).send({ error: "BugReport doesn't exist!" });
+      }
+
+      if (req.body.title) {
+        bugReport.title = req.body.title;
+      }
+      if (req.body.priority) {
+        bugReport.priority = req.body.priority;
+      }
+      if (req.body.status) {
+        bugReport.status = req.body.status;
+      }
+      if (req.body.description) {
+        bugReport.description = req.body.description;
+      }
+      bugReport.updated = new Date();
+
+      bugReport.save().then((bugReport) => {
+        const success = "BugReport '" + bugReport.id + "' successfully updated!";
+        res.status(200).json({msg: success});
+      })
+    })
+    .catch((err) => { next(err); });
+});
+
 
 router.post("/bugreport", (req, res) => {
   try {

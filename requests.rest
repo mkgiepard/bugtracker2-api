@@ -142,5 +142,16 @@ Content-Type: application/json
 
 ###
  
-GET http://localhost:3000/app/bugreport/1001
+GET http://localhost:3000/app/bugreports/1001
 
+###
+
+PUT http://localhost:3000/app/bugreports/1001
+Content-Type: application/json
+
+  {
+    "title": "bug report 1 updated",
+    "priority": 1,
+    "status": "Fixed",
+    "description": "lorem epsum... updated"
+  }
