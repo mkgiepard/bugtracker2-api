@@ -12,7 +12,7 @@ router.get("/testing", (req, res) => {
   res.json({ msg: "SUCCESS: not protected /testing route (3000)" });
 });
 
-router.get("/bugReports", (req, res) => {
+router.get("/bugreports", (req, res) => {
   BugReport.find({})
     .then(async (bugReports) => {
       return res.status(200).send(bugReports);
@@ -22,7 +22,20 @@ router.get("/bugReports", (req, res) => {
     });
 });
 
-router.post("/bugReport", (req, res) => {
+router.get("/bugreport/:id", (req, res) => {
+  BugReport.findOne({id: req.params.id})
+    .then(async (bugReport) => {
+      if (!bugReport) {
+        return res.status(404).send({ error: "BugReport doesn't exist!" });
+      }
+      return res.status(200).send(bugReport);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+router.post("/bugreport", (req, res) => {
   try {
     const newBugReport =  new BugReport({
       id: req.body.id,
