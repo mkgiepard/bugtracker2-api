@@ -12,7 +12,7 @@ router.get("/testing", (req, res) => {
   res.json({ msg: "SUCCESS: not protected /testing route (3000)" });
 });
 
-router.get("/bugreports", (req, res) => {
+router.get("/bugreports", passport.authenticate("jwt", { session: false }), (req, res) => {
   BugReport.find({})
     .then(async (bugReports) => {
       return res.status(200).send(bugReports);
@@ -22,7 +22,7 @@ router.get("/bugreports", (req, res) => {
     });
 });
 
-router.get("/bugreports/:id", (req, res) => {
+router.get("/bugreports/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
   BugReport.findOne({id: req.params.id})
     .then(async (bugReport) => {
       if (!bugReport) {
@@ -35,7 +35,7 @@ router.get("/bugreports/:id", (req, res) => {
     });
 });
 
-router.put("/bugreports/:id", (req, res) => {
+router.put("/bugreports/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
   console.log(req);
   BugReport.findOne({id: req.params.id})
     .then(async (bugReport) => {
@@ -65,7 +65,7 @@ router.put("/bugreports/:id", (req, res) => {
     .catch((err) => { next(err); });
 });
 
-router.delete("/bugreports/:id", (req, res) => {
+router.delete("/bugreports/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
   BugReport.deleteOne({id: req.params.id})
   .then((result) => {
     if (result.deletedCount == 1) {
@@ -81,7 +81,7 @@ router.delete("/bugreports/:id", (req, res) => {
 });
 
 
-router.post("/bugreports", (req, res) => {
+router.post("/bugreports", passport.authenticate("jwt", { session: false }), (req, res) => {
   try {
     const newBugReport =  new BugReport({
       id: req.body.id,
