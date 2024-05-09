@@ -105,8 +105,15 @@ router.post("/token", (req, res) => {
 });
 
 router.delete("/logout", passport.authenticate("jwt", { session: false }), (req, res, next) => {
-  refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
-  res.sendStatus(204);
+  Token.deleteOne({ token: req.body.token })
+    .then((result) => {
+      if (result.deletedCount == 1) {
+        return res.status(204).send();
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 function generateAccessToken(user) {
