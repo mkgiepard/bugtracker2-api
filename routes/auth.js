@@ -7,9 +7,6 @@ const router = require("express").Router();
 const User = mongoose.model("User");
 const Token = mongoose.model("Token");
 
-// just for demo
-let refreshTokens = [];
-
 router.post("/login", (req, res, next) => {
   User.findOne({ username: req.body.username })
     .then(async (user) => {
@@ -24,7 +21,6 @@ router.post("/login", (req, res, next) => {
             { username: req.body.username },
             process.env.REFRESH_TOKEN_SECRET
           );
-          refreshTokens.push(refreshToken);
           
           const newToken = new Token({token: refreshToken});
           newToken.save().catch((err) => {
