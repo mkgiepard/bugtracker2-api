@@ -19,10 +19,11 @@ router.post("/login", (req, res, next) => {
           const accessToken = generateAccessToken({ username: req.body.username });
           const refreshToken = jwt.sign(
             { username: req.body.username },
-            process.env.REFRESH_TOKEN_SECRET
+            process.env.REFRESH_TOKEN_SECRET,
+            { expiresIn: "6000s" }
           );
           
-          const newToken = new Token({token: refreshToken});
+          const newToken = new Token({username: req.body.username, token: refreshToken});
           newToken.save().catch((err) => {
               console.log(err);
           });
@@ -100,11 +101,13 @@ router.post("/token", (req, res) => {
   
 });
 
-router.delete("/logout", passport.authenticate("jwt", { session: false }), (req, res, next) => {
-  Token.deleteOne({ token: req.body.token })
+router.delete("/logout/:username", passport.authenticate("jwt", { session: false }), (req, res) => {
+  Token.deleteOne({ username: req.params.username })
     .then((result) => {
       if (result.deletedCount == 1) {
         return res.status(204).send();
+      } else {
+        return res.status(404).send();
       }
     })
     .catch((err) => {
