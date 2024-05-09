@@ -5,6 +5,7 @@ const passport = require("passport");
 const router = require("express").Router();
 
 const User = mongoose.model("User");
+const Token = mongoose.model("Token");
 
 // just for demo
 let refreshTokens = [];
@@ -24,6 +25,12 @@ router.post("/login", (req, res, next) => {
             process.env.REFRESH_TOKEN_SECRET
           );
           refreshTokens.push(refreshToken);
+          
+          const newToken = new Token({token: refreshToken});
+          newToken.save().then(console.log('added token do db')).catch((err) => {
+              console.log(err);
+          });
+
           res.json({ accessToken: accessToken, refreshToken: refreshToken });
         } else {
           res.status(401).json({ error: "Wrong user or password" });
@@ -33,6 +40,7 @@ router.post("/login", (req, res, next) => {
       }
     })
     .catch((err) => {
+      console.log(err);
       next(err);
     });
 });
@@ -92,7 +100,7 @@ router.delete("/logout", passport.authenticate("jwt", { session: false }), (req,
 });
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "300s" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3000s" });
 }
 
 module.exports = router;

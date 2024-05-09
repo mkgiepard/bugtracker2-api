@@ -13,8 +13,10 @@ const app = express();
 // MongoDB connection and models
 require("./config/database");
 require("./model/user");
+require("./model/token");
 require("./model/bugReport");
 const User = mongoose.model("User");
+const Token = mongoose.model("Token");
 const BugReport = mongoose.model("BugReport");
 
 // Passport configuration and init
