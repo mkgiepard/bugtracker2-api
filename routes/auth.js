@@ -27,7 +27,7 @@ router.post("/login", (req, res, next) => {
           refreshTokens.push(refreshToken);
           
           const newToken = new Token({token: refreshToken});
-          newToken.save().then(console.log('added token do db')).catch((err) => {
+          newToken.save().catch((err) => {
               console.log(err);
           });
 
@@ -86,12 +86,22 @@ router.post("/register", async (req, res) => {
 router.post("/token", (req, res) => {
   const refreshToken = req.body.token;
   if (refreshToken == null) return res.sendStatus(401);
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403);
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    const accessToken = generateAccessToken({ username: user.name });
-    res.json({ accessToken: accessToken });
-  });
+
+  Token.findOne({ token: refreshToken })
+    .then((t) => {
+      if (!t) return res.sendStatus(403);
+
+      jwt.verify(t.token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        const accessToken = generateAccessToken({ username: user.name });
+        res.json({ accessToken: accessToken });
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+
+  
 });
 
 router.delete("/logout", passport.authenticate("jwt", { session: false }), (req, res, next) => {
