@@ -20,7 +20,7 @@ router.post("/login", (req, res, next) => {
           const refreshToken = jwt.sign(
             { username: req.body.username },
             process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: "6000s" }
+            { expiresIn: "7200s" }
           );
           
           const newToken = new Token({username: req.body.username, token: refreshToken});
@@ -81,7 +81,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/token", (req, res) => {
-  const refreshToken = req.body.token;
+  const refreshToken = req.body.refresh_token;
   if (refreshToken == null) return res.sendStatus(401);
 
   Token.findOne({ token: refreshToken })
@@ -116,7 +116,7 @@ router.delete("/logout/:username", passport.authenticate("jwt", { session: false
 });
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3000s" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "900s" });
 }
 
 module.exports = router;
