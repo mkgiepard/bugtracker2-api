@@ -1,5 +1,19 @@
 const mongoose = require("mongoose");
 
+const BugReportComment = {
+  author: String,
+  comment: String,
+  created: Date,
+  updated: Date,
+}
+
+const BugReportUpdate = {
+  author: String,
+  comment: String,
+  created: Date,
+  updated: Date,
+}
+
 const BugReportSchema = new mongoose.Schema({
   id: Number,
   title: String,
@@ -11,8 +25,8 @@ const BugReportSchema = new mongoose.Schema({
     },
   description: String,
   author: String,
-  //comments: [BugReportComment],
-  //updates: [BugReportUpdate],
+  comments: [BugReportComment],
+  updates: [BugReportUpdate],
   created: Date,
   updated: Date,
 });

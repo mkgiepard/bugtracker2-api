@@ -90,6 +90,8 @@ router.post("/bugreports", passport.authenticate("jwt", { session: false }), (re
       status: req.body.status,
       description: req.body.description,
       author: req.body.author,
+      comments: req.body.comments,
+      updates: req.body.updates,
       created: req.body.created,
       updated: req.body.updated,
     });
