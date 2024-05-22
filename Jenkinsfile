@@ -22,6 +22,13 @@ pipeline {
                 '''
             }
         }
+        stage ('testStart'){
+            steps{
+                sh '''
+                npm testStart
+                '''
+            }
+        }
         stage('Checking out RESTAssured tests') {
             steps {
                 sh 'mkdir -p deps/RESTAssured'
