@@ -30,7 +30,7 @@ pipeline {
                         git(
                             url: 'https://github.com/mkgiepard/bugtracker2-api-RESTAssured.git',
                             credentialsId: '3b8de3c5-cc7c-40eb-ae78-1b53959c7e9c',
-                            branch: 'master'
+                            branch: 'main'
                         )
                     }
                 }
