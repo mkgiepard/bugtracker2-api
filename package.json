@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "devStart": "NODE_ENV=dev PORT=3000 nodemon server.js --ignore '*/*.test.js'",
-    "testStart": "NODE_ENV=test PORT=3001 node server.js --ignore '*/*.test.js'",
+    "testStart": "NODE_ENV=test PORT=3001 node server.js --ignore '*/*.test.js' --host 0.0.0.0",
     "testWatch": "node --test --watch",
     "test": "node --test"
 
