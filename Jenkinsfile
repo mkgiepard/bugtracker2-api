@@ -15,17 +15,17 @@ pipeline {
                 '''
             }
         }
-        stage ('test'){
-            steps{
-                sh '''
-                npm test
-                '''
-            }
-        }
         stage ('testStart'){
             steps{
                 sh '''
                 npm testStart
+                '''
+            }
+        }
+        stage ('test'){
+            steps{
+                sh '''
+                npm test
                 '''
             }
         }
