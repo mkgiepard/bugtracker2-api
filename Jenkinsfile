@@ -19,6 +19,7 @@ pipeline {
             steps{
                 sh '''
                 npm run testStart &
+                sleep 2
                 '''
             }
         }
