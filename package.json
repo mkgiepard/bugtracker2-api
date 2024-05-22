@@ -6,7 +6,9 @@
   "scripts": {
     "devStart": "NODE_ENV=dev PORT=3000 nodemon server.js --ignore '*/*.test.js'",
     "testStart": "NODE_ENV=test PORT=3001 nodemon server.js --ignore '*/*.test.js'",
-    "test": "node --test --watch"
+    "testWatch": "node --test --watch",
+    "test": "node --test"
+
   },
   "keywords": [],
   "author": "",
