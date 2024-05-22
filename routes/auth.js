@@ -32,8 +32,8 @@ router.post("/login", (req, res, next) => {
         } else {
           res.status(401).json({ error: "Wrong user or password" });
         }
-      } catch {
-        res.status(500).send();
+      } catch (err) {
+        res.status(500).send(err);
       }
     })
     .catch((err) => {

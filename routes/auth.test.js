@@ -20,8 +20,6 @@ describe("POST /auth/login", () => {
       },
       body: JSON.stringify(data),
     });
-    console.log(response);
-    strictEqual(response, {});
     strictEqual(response.status, 200);
   });
 
