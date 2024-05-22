@@ -34,5 +34,4 @@ app.use(cors());
 app.use(require("./routes"));
 
 // -------------------- SERVER -------------------- //
-console.log(process.env.PORT);
 app.listen(process.env.PORT);
