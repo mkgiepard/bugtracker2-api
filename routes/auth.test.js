@@ -23,8 +23,40 @@ describe("POST /auth/login", () => {
     strictEqual(response.status, 200);
   });
 
-  it.todo("should return 401 on a missing User", () => {});
-  it.todo("should return 401 on a missing User with a password of existing User", () => {});
+  it("should return 401 on a missing User", async () => {
+    const data = {
+      username: "notauser",
+      password: "somepwd",
+    };
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    responseJson = await response.json();
+    strictEqual(response.status, 401);
+    deepStrictEqual(responseJson, { error: "Wrong user or password" });
+  });
+
+  it("should return 401 on a missing User with a password of existing User", async () => {
+    const data = {
+      username: "notauser",
+      password: process.env.DEFAULT_PWD,
+    };
+    const response = await fetch(`${BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    responseJson = await response.json();
+    strictEqual(response.status, 401);
+    deepStrictEqual(responseJson, { error: "Wrong user or password" });
+  });
+  
   it("should return 401 on a wrong password", async () => {
     const data = {
       username: "Mario",
