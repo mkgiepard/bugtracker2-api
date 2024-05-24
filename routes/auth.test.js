@@ -3,7 +3,7 @@ const dotenvExpand = require('dotenv-expand');
 dotenvExpand.expand(dotenv.config());
 
 const { describe, it, before, after } = require("node:test");
-const { assert, strictEqual, deepStrictEqual } = require("node:assert");
+const { assert, match, strictEqual, deepStrictEqual } = require("node:assert");
 
 describe("POST /auth/login", () => {
   const BASE_URL = "http://localhost:3001";
@@ -20,7 +20,10 @@ describe("POST /auth/login", () => {
       },
       body: JSON.stringify(data),
     });
+    responseJson = await response.json();
     strictEqual(response.status, 200);
+    match(responseJson.accessToken, /[a-zA-Z0-9._]/);
+    match(responseJson.refreshToken, /[a-zA-Z0-9._]/);
   });
 
   it("should return 401 on a missing User", async () => {
@@ -56,7 +59,7 @@ describe("POST /auth/login", () => {
     strictEqual(response.status, 401);
     deepStrictEqual(responseJson, { error: "Wrong user or password" });
   });
-  
+
   it("should return 401 on a wrong password", async () => {
     const data = {
       username: "Mario",
