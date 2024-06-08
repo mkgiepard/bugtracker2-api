@@ -16,6 +16,8 @@ module.exports = (passport, getUserByUsername) => {
       if (user == null) {
         return done(null, false);
       } else {
+        console.log('from passport');
+        console.log(user);
         return done(null, user);
       }
     })

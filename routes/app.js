@@ -117,7 +117,29 @@ router.post("/bugreports", passport.authenticate("jwt", { session: false }), (re
   }
 })
 
-router.get("/users", passport.authenticate("jwt", { session: false }), (req, res) => {
+// source: https://medium.com/@nil041297/mastering-role-based-authorization-in-your-mern-app-a-comprehensive-guide-with-jwt-and-passport-js-d7693143b33b
+// Middleware function to check if the user has the required role(s)
+// const checkUserRole = (requiredRoles) => (req, res, next) => {
+//   if (req.user && requiredRoles.includes(req.user.role)) {
+//     return next();
+//   } else {
+//     return res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
+//   }
+// };
+
+const checkRequiredUser = (requiredUser) => (req, res, next) => {
+  if (req.user) {
+    req.user.then((u) => {
+      if (u.username === requiredUser) {
+        return next();
+      } else {
+        return res.status(403).json({ message: 'Access denied. Insufficient permissions.' });
+      }    
+    })
+  }
+}
+
+router.get("/users", passport.authenticate("jwt", { session: false }), checkRequiredUser('admin'), (req, res) => {
   User.find({})
     .select(["-password", "-__v"])
     .then(async (users) => {
